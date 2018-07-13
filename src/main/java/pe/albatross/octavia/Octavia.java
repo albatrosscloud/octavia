@@ -1017,7 +1017,9 @@ public class Octavia {
         Object value = filter.getValue();
         String param = "PARAM_" + String.format("%06d", filter.getIndex());
 
-        if (value instanceof String) {
+        if (value == null) {
+            query.setParameter(param, value);
+        } else if (value instanceof String) {
             query.setString(param, (String) value);
         } else if (value instanceof Integer) {
             query.setInteger(param, (Integer) value);
