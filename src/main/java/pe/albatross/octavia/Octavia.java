@@ -1292,12 +1292,16 @@ public class Octavia {
                 case COMPLEX_LIKE:
                 case LIKE:
                 case NOT_LIKE:
+                    sql.append(" ").append(filter.getComparision().getValue());
+                    sql.append(" :PARAM_").append(String.format("%06d", filter.getIndex()));
+                    break;
                 case IN_LIST:
                 case IN_LIST_DATES:
                 case NOT_IN_LIST:
                 case NOT_IN_LIST_DATES:
-                    sql.append(" ").append(filter.getComparision().getValue());
+                    sql.append(" ").append(filter.getComparision().getValue()).append(" (");
                     sql.append(" :PARAM_").append(String.format("%06d", filter.getIndex()));
+                    sql.append(") ");
                     break;
                 case IS_NULL:
                     sql.append(" IS NULL");
