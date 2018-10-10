@@ -64,7 +64,7 @@ public class Octavia {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static List<Class> TYPICAL_CLASSES = Arrays.asList(
-            String.class, Integer.class, Long.class, BigDecimal.class, Float.class, Double.class, Timestamp.class, Date.class
+            String.class, Integer.class, Long.class, BigDecimal.class, Float.class, Double.class, Timestamp.class, Date.class, Boolean.class
     );
 
     public Octavia() {
@@ -1031,11 +1031,11 @@ public class Octavia {
             query.setFloat(param, (Float) value);
         } else if (value instanceof Double) {
             query.setDouble(param, (Double) value);
+        } else if (value instanceof Boolean) {
+            query.setBoolean(param, (Boolean) value);
         } else if (value instanceof Timestamp) {
-            //query.setTimestamp(param, (Timestamp) value);
             query.setParameter(param, value);
         } else if (value instanceof Date) {
-            //query.setDate(param, (Date) value);
             query.setParameter(param, value);
         } else {
             query.setLong(param, getIdObject(value));
@@ -1060,6 +1060,8 @@ public class Octavia {
             query.setFloat(paramTwo, (Float) valueTwo);
         } else if (valueTwo instanceof Double) {
             query.setDouble(paramTwo, (Double) valueTwo);
+        } else if (valueTwo instanceof Boolean) {
+            query.setBoolean(paramTwo, (Boolean) valueTwo);
         } else if (valueTwo instanceof Timestamp) {
             query.setTimestamp(paramTwo, (Timestamp) valueTwo);
         } else if (valueTwo instanceof Date) {
