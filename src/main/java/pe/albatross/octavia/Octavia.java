@@ -145,7 +145,10 @@ public class Octavia {
 
         }
 
-        this.filter("id", val);
+        Long idObject = getIdObject(val, false);
+        if (idObject != null) {
+            this.filter("id", idObject);
+        }
         return this;
     }
 
@@ -383,8 +386,8 @@ public class Octavia {
         String attribute = parts.length == 2 ? parts[1] : parts[0];
 
         if (values.isEmpty()) {
-            String value2 = (typeFilter == IN_LIST) ? "2" : "1";
-            FilterQuery fq = new FilterQuery("1", ComparisonOperatorEnum.EQUAL, value2, true);
+            String value2 = (typeFilter == IN_LIST) ? "'xyz'" : "'abc'";
+            FilterQuery fq = new FilterQuery("'abc'", ComparisonOperatorEnum.EQUAL, value2, true);
             fq.setIndex(parametersCount++);
             if (blockFilter != null) {
                 this.childrenFilters.add(fq);
@@ -1072,7 +1075,7 @@ public class Octavia {
 
     }
 
-    private Long getIdObject(Object object) {
+    private Long getIdObject(Object object, boolean withValidation) {
         Method getIdMethod = null;
         for (Method method : object.getClass().getMethods()) {
             if (method.getName().equals("getId")) {
@@ -1088,8 +1091,14 @@ public class Octavia {
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
         }
 
-        Preconditions.isNotNull(id, "El valor del atributo ID es null");
+        if (withValidation) {
+            Preconditions.isNotNull(id, "El valor del atributo ID es null");
+        }
         return id;
+    }
+
+    private Long getIdObject(Object object) {
+        return getIdObject(object, true);
     }
 
     public Field getAttribute(String atribute) {
@@ -1126,6 +1135,7 @@ public class Octavia {
 
     @Override
     public String toString() {
+        isClauseWhereOpen = false;
         Preconditions.isTrue(this.blockFilter == null, "No cerró todos los bloques");
         verifyExists();
 
@@ -1139,6 +1149,7 @@ public class Octavia {
         if (isUpdate) {
             createSetOfUpdate(sql);
         }
+        
         createWhere(prefix, sql, filters, BLOCK_AND);
         if (!isUpdate) {
             createGroupBy(sql);
@@ -1253,6 +1264,10 @@ public class Octavia {
         int loop = 0;
         String condition = typeCondition == BLOCK_AND ? " and " : " or ";
 
+        if (this.isUpdate) {
+            Preconditions.isFalse(filters.isEmpty(), "El update debe contener al menos una restriccion en la clausula WHERE");
+        }
+
         for (FilterQuery filter : filters) {
 
             sql.append(prefix).append(!isClauseWhereOpen ? " where " : (loop == 0 ? "" : condition));
@@ -1349,6 +1364,7 @@ public class Octavia {
 
             loop++;
         }
+//        isClauseWhereOpen = false;
     }
 
     private void createFrom(StringBuilder sql) {
