@@ -34,12 +34,14 @@ public class Insecto {
     private final String NULL = "null";
     private final String ATTR_ID = "id";
     private final String QUOTES = "'";
+    private final String DATE_FORMAT_STANDARD = "yyyy-MM-dd HH:mm:ss";
 
     public static final String INSERT_INTO = "INSERT_INTO";
     public static final String UPDATE = "UPDATE";
 
     public static List<Class> TYPICAL_CLASSES = Arrays.asList(
-            String.class, Integer.class, Long.class, BigDecimal.class, Float.class, Double.class, Timestamp.class, Date.class, Boolean.class
+            String.class, Integer.class, Long.class, BigDecimal.class, Float.class, Double.class, Boolean.class,
+            Timestamp.class, Date.class, java.sql.Date.class
     );
 
     public Insecto(String tipo) {
@@ -227,14 +229,13 @@ public class Insecto {
     }
 
     private String getNewValue(Object row, String attr) {
-        Object val = getValue(row, attr);
+        Object val = getValue(row, attr, null, this.clazz);
         if (val == null) {
             return NULL;
         }
 
-        if (TYPICAL_CLASSES.contains(val.getClass())) {
-        } else {
-            val = getValue(val, ATTR_ID);
+        if (!TYPICAL_CLASSES.contains(val.getClass())) {
+            val = getValue(val, ATTR_ID, attr, val.getClass());
             if (val == null) {
                 return NULL;
             }
@@ -242,6 +243,10 @@ public class Insecto {
 
         Class claxx = val.getClass();
         if (claxx == Date.class) {
+            return getDateSql((Date) val);
+        } else if (claxx == java.sql.Date.class) {
+            return getDateSql((Date) val);
+        } else if (claxx == Timestamp.class) {
             return getDateSql((Date) val);
         } else if (claxx == Long.class) {
             return getLongSql((Long) val);
@@ -255,7 +260,7 @@ public class Insecto {
 
     }
 
-    public static Object getValue(Object obj, String attr) {
+    private static Object getValue(Object obj, String attr, String parentAttr, Class claxx) {
         Object parent = null;
         Method metodo = null;
         String ini = attr.substring(0, 1);
@@ -269,10 +274,20 @@ public class Insecto {
         }
         try {
             parent = metodo.invoke(obj);
+
         } catch (InvocationTargetException ex) {
-            throw new OctaviaException("El método [[" + methodName + "]] no es genérico");
+            if (parentAttr == null) {
+                throw new OctaviaException("El método [[" + methodName + "]] no es genérico");
+            } else {
+                throw new OctaviaException("El método [[" + parentAttr + "." + methodName + "]] no es genérico");
+            }
+
         } catch (Exception ex) {
-            throw new OctaviaException("No existe el método [[" + methodName + "]]");
+            if (parentAttr == null) {
+                throw new OctaviaException("No existe el método [[" + methodName + "]] para la clase " + claxx.getName());
+            } else {
+                throw new OctaviaException("No existe el método [[" + parentAttr + "." + methodName + "]] para la claxx " + claxx.getName());
+            }
         }
 
         return parent;
@@ -292,9 +307,11 @@ public class Insecto {
                         this.columns.add(column);
                         this.mapColumns.put(attr, column);
                     } catch (Exception ee) {
-                        throw new OctaviaException("El atributo [[" + clazz.getSimpleName() + "." + attr + "]] no esta configurada como columna de tabla");
+                        throw new OctaviaException("El atributo [[" + clazz.getSimpleName() + "." + attr + "]] no esta mapeada como columna de tabla");
                     }
                 }
+            } catch (OctaviaException ex) {
+                throw new OctaviaException(ex.getLocalizedMessage());
             } catch (Exception ex) {
                 throw new OctaviaException("La class [[" + clazz.getSimpleName() + "]] no tiene el atríbuto [[" + attr + "]]");
             }
@@ -311,6 +328,7 @@ public class Insecto {
             }
             sql.append(t.name());
         } catch (Exception e) {
+            throw new OctaviaException("La class " + clazz.getSimpleName() + " no esta mapeada como Tabla");
         }
     }
 
@@ -321,7 +339,7 @@ public class Insecto {
 
         StringBuilder valuesSql = new StringBuilder(QUOTES);
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("es", "ES"));
+            SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_STANDARD, new Locale("es", "ES"));
             valuesSql.append(sdf.format(fecha));
         } catch (Exception e) {
         }
