@@ -254,6 +254,8 @@ public class Insecto {
             return getBigDecimalSql((BigDecimal) val);
         } else if (claxx == Integer.class) {
             return getIntegerSql((Integer) val);
+        } else if (claxx == Boolean.class) {
+            return getBooleanSql((Boolean) val);
         } else {
             return getStringSql((String) val);
         }
@@ -377,6 +379,13 @@ public class Insecto {
             return NULL;
         }
         return number + "";
+    }
+
+    private String getBooleanSql(Boolean isTrue) {
+        if (isTrue == null) {
+            return NULL;
+        }
+        return isTrue + "";
     }
 
     private Long getIdObject(Object object, boolean withValidation) {
