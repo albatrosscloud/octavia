@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.hibernate.SessionFactory;
 import com.google.common.base.Preconditions;
@@ -17,7 +15,6 @@ import pe.albatross.octavia.dynatable.DynatableSql;
 public abstract class AbstractEasyDAO<T extends Serializable> implements EasyDAO<T> {
 
     private Class<T> clazz;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -74,6 +71,13 @@ public abstract class AbstractEasyDAO<T extends Serializable> implements EasyDAO
 
     protected void update(Octavia octavia) {
         octavia.execute(this.getCurrentSession());
+    }
+
+    @Override
+    public void updateColumns(T entity, String... columns) {
+        Octavia sql = Octavia.update(clazz);
+        sql.set(entity, columns);
+        this.update(sql);
     }
 
     @Override

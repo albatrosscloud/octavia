@@ -15,6 +15,8 @@ public interface EasyDAO<T extends Serializable> {
 
     void update(final T entity);
 
+    void updateColumns(final T entity, String... columns);
+
     void delete(final T entity);
 
     void delete(final long id);
