@@ -1149,7 +1149,7 @@ public class Octavia {
         if (isUpdate) {
             createSetOfUpdate(sql);
         }
-        
+
         createWhere(prefix, sql, filters, BLOCK_AND);
         if (!isUpdate) {
             createGroupBy(sql);
@@ -1422,6 +1422,14 @@ public class Octavia {
                 return true;
             }
         }
+
+        String formulax = formula.replaceAll(" +", " ");
+        formulax = formulax.replaceAll("\n+", " ");
+        formulax = " " + formulax + " ";
+        if (formulax.contains(" case ")) {
+            return true;
+        }
+
         return false;
     }
 
