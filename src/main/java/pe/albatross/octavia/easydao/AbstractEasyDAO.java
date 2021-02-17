@@ -36,6 +36,15 @@ public abstract class AbstractEasyDAO<T extends Serializable> implements EasyDAO
         return (T) octavia.find(this.getCurrentSession());
     }
 
+    protected T findEvict(Octavia octavia) {
+        T objeto = (T) octavia.find(this.getCurrentSession());
+        
+        if (objeto != null) {
+            this.getCurrentSession().evict(objeto);
+        }
+        return objeto;
+    }
+
     @Override
     public List<T> all() {
         String query = "from " + clazz.getName();

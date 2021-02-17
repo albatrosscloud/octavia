@@ -3,7 +3,11 @@ package pe.albatross.octavia.dynatable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class DynatableFilter {
 
     private Integer page;
@@ -30,60 +34,15 @@ public class DynatableFilter {
         return search;
     }
 
-    public Integer getPage() {
-        return page;
-    }
+    public DynatableResponse getDynatableResponse(Object data) {
 
-    public void setPage(Integer page) {
-        this.page = page;
-    }
+        DynatableResponse dynatableResponse = new DynatableResponse();
+        dynatableResponse.setFiltered(this.filtered);
+        dynatableResponse.setTotal(this.total);
+        dynatableResponse.setData(data);
 
-    public Integer getPerPage() {
-        return perPage;
-    }
+        return dynatableResponse;
 
-    public void setPerPage(Integer perPage) {
-        this.perPage = perPage;
-    }
-
-    public Integer getOffset() {
-        return offset;
-    }
-
-    public void setOffset(Integer offset) {
-        this.offset = offset;
-    }
-
-    public Map getQueries() {
-        return queries;
-    }
-
-    public void setQueries(Map queries) {
-        this.queries = queries;
-    }
-
-    public Integer getTotal() {
-        return total;
-    }
-
-    public void setTotal(Integer total) {
-        this.total = total;
-    }
-
-    public Integer getFiltered() {
-        return filtered;
-    }
-
-    public void setFiltered(Integer filtered) {
-        this.filtered = filtered;
-    }
-
-    public Map getSorts() {
-        return sorts;
-    }
-
-    public void setSorts(Map sorts) {
-        this.sorts = sorts;
     }
 
 }
