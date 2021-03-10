@@ -1,5 +1,7 @@
 package pe.albatross.octavia;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -9,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -30,6 +33,8 @@ public class Insecto {
     private Map<Long, Long> mapVerificaIds;
     private Map<Integer, Long> mapIds;
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     private final String COMMA = ",";
     private final String NULL = "null";
     private final String ATTR_ID = "id";
@@ -41,7 +46,7 @@ public class Insecto {
 
     public static List<Class> TYPICAL_CLASSES = Arrays.asList(
             String.class, Integer.class, Long.class, BigDecimal.class, Float.class, Double.class, Boolean.class,
-            Timestamp.class, Date.class, java.sql.Date.class
+            Timestamp.class, Date.class, java.sql.Date.class, Map.class, HashMap.class
     );
 
     public Insecto(String tipo) {
@@ -244,18 +249,28 @@ public class Insecto {
         Class claxx = val.getClass();
         if (claxx == Date.class) {
             return getDateSql((Date) val);
+
         } else if (claxx == java.sql.Date.class) {
             return getDateSql((Date) val);
+
         } else if (claxx == Timestamp.class) {
             return getDateSql((Date) val);
+
         } else if (claxx == Long.class) {
             return getLongSql((Long) val);
+
         } else if (claxx == BigDecimal.class) {
             return getBigDecimalSql((BigDecimal) val);
+
         } else if (claxx == Integer.class) {
             return getIntegerSql((Integer) val);
+
+        } else if (claxx == HashMap.class) {
+            return getHashMap((HashMap) val);
+
         } else if (claxx == Boolean.class) {
             return getBooleanSql((Boolean) val);
+
         } else {
             return getStringSql((String) val);
         }
@@ -386,6 +401,21 @@ public class Insecto {
             return NULL;
         }
         return isTrue + "";
+    }
+
+    private String getHashMap(HashMap hash) {
+
+        String value = NULL;
+
+        try {
+
+            value = mapper.writeValueAsString(hash);
+
+        } catch (JsonProcessingException ex) {
+            
+        }
+
+        return value;
     }
 
     private Long getIdObject(Object object, boolean withValidation) {
