@@ -1,5 +1,7 @@
 package pe.albatross.octavia;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import pe.albatross.octavia.helpers.TableQuery;
 import pe.albatross.octavia.helpers.ItemOrderBy;
 import pe.albatross.octavia.helpers.FilterQuery;
@@ -13,6 +15,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +60,8 @@ public class Octavia {
     private List<ItemOrderBy> itemsOrderBy;
     private Map<String, TableQuery> mapQueryTables;
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     private final String separator = "::::::::";
     private final String enter = " \n";
     private final String enterInto = " \n\t";
@@ -64,7 +69,9 @@ public class Octavia {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static List<Class> TYPICAL_CLASSES = Arrays.asList(
-            String.class, Integer.class, Long.class, BigDecimal.class, Float.class, Double.class, Timestamp.class, Date.class, Boolean.class
+            String.class, Boolean.class,
+            Integer.class, Long.class, BigDecimal.class, Float.class, Double.class,
+            Timestamp.class, Date.class, HashMap.class
     );
 
     public Octavia() {
@@ -1022,24 +1029,37 @@ public class Octavia {
 
         if (value == null) {
             query.setParameter(param, value);
+
         } else if (value instanceof String) {
             query.setString(param, (String) value);
+
         } else if (value instanceof Integer) {
             query.setInteger(param, (Integer) value);
+
         } else if (value instanceof Long) {
             query.setLong(param, (Long) value);
+
         } else if (value instanceof BigDecimal) {
             query.setBigDecimal(param, (BigDecimal) value);
+
         } else if (value instanceof Float) {
             query.setFloat(param, (Float) value);
+
         } else if (value instanceof Double) {
             query.setDouble(param, (Double) value);
+
         } else if (value instanceof Boolean) {
             query.setBoolean(param, (Boolean) value);
+
         } else if (value instanceof Timestamp) {
             query.setParameter(param, value);
+
         } else if (value instanceof Date) {
             query.setParameter(param, value);
+
+        } else if (value instanceof HashMap) {
+            query.setParameter(param, value);
+
         } else {
             query.setLong(param, getIdObject(value));
         }
