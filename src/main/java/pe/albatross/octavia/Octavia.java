@@ -1,7 +1,5 @@
 package pe.albatross.octavia;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import pe.albatross.octavia.helpers.TableQuery;
 import pe.albatross.octavia.helpers.ItemOrderBy;
 import pe.albatross.octavia.helpers.FilterQuery;
@@ -19,16 +17,17 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 import pe.albatross.octavia.exceptions.OctaviaException;
 import static pe.albatross.octavia.helpers.FilterQuery.FilterTypeEnum.*;
 import pe.albatross.octavia.helpers.ItemOrderBy.OrderTypeEnum;
 import pe.albatross.octavia.helpers.ObjectHelper;
 import pe.albatross.octavia.helpers.TableQuery.TypeJoinEnum;
 
+@Slf4j
 public class Octavia {
 
     private String selects;
@@ -60,13 +59,9 @@ public class Octavia {
     private List<ItemOrderBy> itemsOrderBy;
     private Map<String, TableQuery> mapQueryTables;
 
-    private final ObjectMapper mapper = new ObjectMapper();
-
     private final String separator = "::::::::";
     private final String enter = " \n";
     private final String enterInto = " \n\t";
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static List<Class> TYPICAL_CLASSES = Arrays.asList(
             String.class, Boolean.class,
@@ -918,7 +913,7 @@ public class Octavia {
 
     private void setValues(List<FilterQuery> filters) {
         for (FilterQuery filter : filters) {
-            logger.debug("filter: " + filter.getFilterType().name());
+            log.debug("filter: " + filter.getFilterType().name());
             switch (filter.getFilterType()) {
                 case GENERIC_OPERATOR:
                 case COMPLEX:
@@ -1180,9 +1175,9 @@ public class Octavia {
             String[] strings = sql.toString().split(enter);
             for (int i = 0; i < strings.length; i++) {
                 if (i == 0) {
-                    logger.debug("> " + strings[i]);
+                    log.debug("> " + strings[i]);
                 } else {
-                    logger.debug("  " + strings[i]);
+                    log.debug("  " + strings[i]);
                 }
             }
         }
