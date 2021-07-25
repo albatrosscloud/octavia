@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>pe.albatross</groupId>
     <artifactId>octavia</artifactId>
-    <version>1.1.5</version>
+    <version>1.1.6</version>
     
     <packaging>jar</packaging>
     
@@ -47,7 +47,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.18</version>
+            <version>1.18.20</version>
         </dependency>
         
     </dependencies>
@@ -65,6 +65,13 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            
+            <plugin>
+                <groupId>com.amashchenko.maven.plugin</groupId>
+                <artifactId>gitflow-maven-plugin</artifactId>
+                <version>1.16.0</version>
+            </plugin>
+            
         </plugins>
     </build>
     
