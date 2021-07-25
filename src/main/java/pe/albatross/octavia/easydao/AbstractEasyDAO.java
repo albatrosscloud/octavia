@@ -38,7 +38,7 @@ public abstract class AbstractEasyDAO<T extends Serializable> implements EasyDAO
 
     protected T findEvict(Octavia octavia) {
         T objeto = (T) octavia.find(this.getCurrentSession());
-        
+
         if (objeto != null) {
             this.getCurrentSession().evict(objeto);
         }
