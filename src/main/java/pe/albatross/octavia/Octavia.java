@@ -1098,7 +1098,7 @@ public class Octavia {
                 break;
             }
         }
-        Preconditions.isNotNull(getIdMethod, "No se encontro el atributo ID para el objecto [[" + object + "]]");
+        Preconditions.isNotNull(getIdMethod, "No se encontro el atributo ID para el objecto [[" + object.getClass().getSimpleName() + "]]");
 
         Long id = null;
         try {

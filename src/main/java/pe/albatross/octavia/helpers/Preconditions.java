@@ -21,7 +21,8 @@ public class Preconditions {
 
         if (checkString) {
             if (obj instanceof String) {
-                if (((String) obj).trim().equals("")) {
+                String string = (String) obj;
+                if (string.trim().equals("")) {
                     throw new OctaviaException(msg);
                 }
             }
