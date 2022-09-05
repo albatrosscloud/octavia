@@ -76,8 +76,7 @@ public class DynatableSql {
         return this;
     }
 
-    public List all(Session session) {
-
+    public void createQueriesPrevious() {
         if (this.totalQuery.getSelects() == null) {
             this.totalQuery.selectCount();
         }
@@ -138,6 +137,23 @@ public class DynatableSql {
                 this.dataQuery.endBlock();
             }
         }
+    }
+
+    public String toString(String query) {
+        if (query.equals("totalQuery")) {
+            return this.totalQuery.toString();
+        }
+        if (query.equals("filteredQuery")) {
+            return this.filteredQuery.toString();
+        }
+        if (query.equals("dataQuery")) {
+            return this.dataQuery.toString();
+        }
+        return "";
+    }
+
+    public List all(Session session) {
+        this.createQueriesPrevious();
 
         filter.setTotal(((Long) this.totalQuery.find(session)).intValue());
         filter.setFiltered(((Long) this.filteredQuery.find(session)).intValue());
