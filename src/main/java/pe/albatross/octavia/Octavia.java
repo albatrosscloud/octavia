@@ -20,7 +20,6 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.Query;
-import org.springframework.util.CollectionUtils;
 import pe.albatross.octavia.exceptions.OctaviaException;
 import static pe.albatross.octavia.helpers.FilterQuery.FilterTypeEnum.*;
 import pe.albatross.octavia.helpers.ItemOrderBy.OrderTypeEnum;
@@ -154,7 +153,7 @@ public class Octavia {
         return this;
     }
 
-    public void increaseParams(Integer beginCount, List<FilterQuery> filters) {
+    private void increaseParams(Integer beginCount, List<FilterQuery> filters) {
         for (FilterQuery filter : filters) {
             switch (filter.getFilterType()) {
                 case GENERIC_OPERATOR:
@@ -193,19 +192,19 @@ public class Octavia {
         this.parametersCount = this.parametersCount + beginCount;
     }
 
-    public Boolean isSubqueryIncluded() {
+    private Boolean isSubqueryIncluded() {
         return isSubqueryIncluded;
     }
 
-    public void setIsSubqueryIncluded(Boolean isSubqueryIncluded) {
+    private void setIsSubqueryIncluded(Boolean isSubqueryIncluded) {
         this.isSubqueryIncluded = isSubqueryIncluded;
     }
 
-    public Integer getParametersCount() {
+    private Integer getParametersCount() {
         return parametersCount;
     }
 
-    public List<FilterQuery> getFilters() {
+    private List<FilterQuery> getFilters() {
         return filters;
     }
 
@@ -213,23 +212,23 @@ public class Octavia {
         return selects;
     }
 
-    public void setIsClauseExistsOpen(Boolean isClauseExistsOpen) {
+    private void setIsClauseExistsOpen(Boolean isClauseExistsOpen) {
         this.isClauseExistsOpen = isClauseExistsOpen;
     }
 
-    public String getPrefix() {
+    private String getPrefix() {
         return prefix;
     }
 
-    public void setPrefix(String prefix) {
+    private void setPrefix(String prefix) {
         this.prefix = prefix;
     }
 
-    public Integer getFirstResult() {
+    private Integer getFirstResult() {
         return firstResult;
     }
 
-    public Integer getMaxResults() {
+    private Integer getMaxResults() {
         return maxResults;
     }
 
@@ -1116,7 +1115,7 @@ public class Octavia {
         return getIdObject(object, true);
     }
 
-    public Field getAttribute(String atribute) {
+    private Field getAttribute(String atribute) {
         String[] parts = atribute.split("\\.");
         Preconditions.isFalse(parts.length > 2, "La columna [[" + atribute + "]] tiene muchos alias padres");
 
