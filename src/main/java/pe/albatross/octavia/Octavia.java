@@ -372,8 +372,28 @@ public class Octavia {
         return setFilterIn(column, valuex, ComparisonOperatorEnum.IN, IN_LIST);
     }
 
+    public Octavia notIn(String column, Object[] items) {
+        List list = new ArrayList();
+        for (Object item : items) {
+            if (item instanceof Enum) {
+                list.add(((Enum) item).name());
+            } else {
+                list.add(item);
+            }
+        }
+        return setFilterIn(column, list, ComparisonOperatorEnum.NOT_IN, NOT_IN_LIST);
+    }
+
     public Octavia notIn(String column, List values) {
-        return setFilterIn(column, values, ComparisonOperatorEnum.NOT_IN, NOT_IN_LIST);
+        List valuex = new ArrayList();
+        for (Object item : values) {
+            if (item instanceof Enum) {
+                valuex.add(((Enum) item).name());
+            } else {
+                valuex.add(item);
+            }
+        }
+        return setFilterIn(column, valuex, ComparisonOperatorEnum.NOT_IN, NOT_IN_LIST);
     }
 
     private Octavia setFilterIn(String column, List values, ComparisonOperatorEnum comparison, FilterQuery.FilterTypeEnum typeFilter) {
